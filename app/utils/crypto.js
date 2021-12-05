@@ -15,25 +15,6 @@ const encryptPassword = async (data, key) => {
 
     return { encrypted, iv: iv.toString() };
 }
- 
-const encryptData = async (data, key) => {
-    const iv = await promisifiedRandomFill(new Uint8Array(16));
-    const aes = crypto.createCipheriv(config.cipherDataName, key, iv);
-    let encrypted = aes.update(data, 'utf8', 'hex');
-    encrypted += aes.final('hex');
-    const tag = aes.getAuthTag();
-
-    return { encrypted, iv: iv.toString(), tag: tag.toString('base64') };
-}
-
-const decryptData = (data, key, iv, tag) => {
-    const aes = crypto.createDecipheriv(config.cipherDataName, key, iv);
-    aes.setAuthTag(tag);
-    let decrypted = aes.update(data, 'hex', 'utf-8');
-    decrypted += aes.final('utf-8');
-
-    return decrypted;
-}
 
 const decryptPassword = (data, key, iv) => {
     const aes = crypto.createDecipheriv(config.cipherPasswordName, key, iv);
@@ -54,6 +35,4 @@ module.exports = {
     encryptPassword,
     hashing,
     decryptPassword,
-    encryptData,
-    decryptData
 }
