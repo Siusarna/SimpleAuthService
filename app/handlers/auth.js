@@ -2,8 +2,8 @@
 
 const argon2 = require('argon2');
 const {BadRequest} = require('../exceptions')
-const {encryptPassword, hashing, decryptPassword, encryptData, decryptData} = require('../utils/crypto');
-const { decrypt } = require('../lib/aws')
+const {encryptPassword, hashing, decryptPassword} = require('../utils/crypto');
+const { createToken } = require('../utils/jwt');
 const config = require('../config');
 const userModels = require('../models/users');
 const {knex} = require('../lib/db');
@@ -21,8 +21,12 @@ const signIn = async ({email, password}) => {
     if (!(await argon2.verify(decryptedPassword, password))) {
         throw new BadRequest('Login failed; Invalid email or password.');
     }
+
+    const token = createToken(storedUser.id);
+
     return {
         user,
+        token,
     };
 };
 
@@ -37,10 +41,11 @@ const signUp = async ({email, password}) => {
         })
     })
 
-
+    const token = createToken(user.id);
 
     return {
-        user
+        user,
+        token
     };
 }
 

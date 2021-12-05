@@ -23,10 +23,7 @@ exports.signIn = {
 }
 
 exports.signUp = {
-    body: loginInfo.keys({
-        address: Joi.string().required(),
-        phone: Joi.string().required()
-    })
+    body: loginInfo
 }
 
 exports.options = {
