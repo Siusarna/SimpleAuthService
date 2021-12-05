@@ -1,0 +1,29 @@
+{
+  "name": "5-6",
+  "version": "1.0.0",
+  "description": "",
+  "main": "./app/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nodemon ./app/index.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "argon2": "^0.28.2",
+    "aws-sdk": "^2.1034.0",
+    "body-parser": "^1.19.0",
+    "celebrate": "^15.0.0",
+    "csurf": "^1.11.0",
+    "express": "^4.17.1",
+    "express-rate-limit": "^5.5.1",
+    "hpp": "^0.2.3",
+    "humps": "^2.0.1",
+    "knex": "^0.95.14",
+    "md5": "^2.3.0",
+    "pg": "^8.7.1"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.15"
+  }
+}
