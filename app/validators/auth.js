@@ -26,9 +26,22 @@ exports.signUp = {
     body: loginInfo
 }
 
-exports.options = {
+exports.isAuth = {
+    headers: Joi.object({
+        authorization: Joi.string().required(),
+    })
+}
+
+const defaultOptions = {
     presence: 'required',
     allowUnknown: false,
     abortEarly: false,
     convert: false
 };
+
+exports.defaultOptions = defaultOptions
+
+exports.isAuthOptions = {
+    ...defaultOptions,
+    allowUnknown: true
+}

@@ -3,7 +3,7 @@
 const argon2 = require('argon2');
 const {BadRequest} = require('../exceptions')
 const {encryptPassword, hashing, decryptPassword} = require('../utils/crypto');
-const { createToken } = require('../utils/jwt');
+const { createToken, verifyToken } = require('../utils/jwt');
 const config = require('../config');
 const userModels = require('../models/users');
 const {knex} = require('../lib/db');
@@ -49,7 +49,17 @@ const signUp = async ({email, password}) => {
     };
 }
 
+const isAuth = async (token) => {
+    const { id } = verifyToken(token);
+    const user = await knex.transaction(trx => {
+        return userModels.selectById(trx, id);
+    });
+
+    return user
+}
+
 module.exports = {
     signUp,
-    signIn
+    signIn,
+    isAuth
 }

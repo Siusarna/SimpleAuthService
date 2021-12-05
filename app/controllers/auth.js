@@ -16,7 +16,15 @@ const signUp = async (req, res) => {
     })
 };
 
+const isAuth = async (req, res) => {
+    const response = await handlers.isAuth(req.get('authorization'));
+    res.status(200).send({
+        ...response
+    })
+};
+
 module.exports = {
     signIn,
-    signUp
+    signUp,
+    isAuth
 }

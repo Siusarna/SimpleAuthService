@@ -34,8 +34,15 @@ class BadRequest extends BaseError {
     }
 }
 
+class Unauthorized extends BaseError {
+    constructor(message, status = 401, details = {}) {
+        super(message, status, details);
+    }
+}
+
 module.exports = {
     DatabaseValidationError,
     DatabaseSaveError,
-    BadRequest
+    BadRequest,
+    Unauthorized
 }

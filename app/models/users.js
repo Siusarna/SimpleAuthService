@@ -53,7 +53,16 @@ const selectByEmail = async (trx, data) => {
     return humps.camelizeKeys(results[0]);
 }
 
+const selectById = async (trx, id) => {
+    const results = await trx
+        .select(['id', 'email', 'created_at'])
+        .from(table)
+        .where({ id })
+    return humps.camelizeKeys(results[0]);
+}
+
 module.exports = {
     create,
-    selectByEmail
+    selectByEmail,
+    selectById
 }
