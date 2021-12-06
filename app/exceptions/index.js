@@ -18,7 +18,7 @@ class BaseError extends Error {
 
 class DatabaseValidationError extends BaseError {
     constructor(message, status = 422, details = {}) {
-        super(message, status, details);
+        super(`Schema validation error: ${message}`, status, details);
     }
 }
 
