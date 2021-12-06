@@ -46,19 +46,23 @@ const create = async (trx, data) => {
 }
 
 const selectByEmail = async (trx, data) => {
-    const results = await trx
+    const query = trx
         .select(['id', 'email', 'password', 'iv', 'created_at'])
         .from(table)
         .where({ email: data.email })
-    return humps.camelizeKeys(results[0]);
+
+    const result = await query.first();
+    return humps.camelizeKeys(result);
 }
 
 const selectById = async (trx, id) => {
-    const results = await trx
+    const query = trx
         .select(['id', 'email', 'created_at'])
         .from(table)
         .where({ id })
-    return humps.camelizeKeys(results[0]);
+
+    const data = await query.first();
+    return humps.camelizeKeys(data);
 }
 
 module.exports = {

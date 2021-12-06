@@ -2,8 +2,8 @@
 
 const argon2 = require('argon2');
 const {BadRequest} = require('../exceptions')
-const {encryptPassword, hashing, decryptPassword} = require('../utils/crypto');
-const { createToken, verifyToken } = require('../utils/jwt');
+const cryptoUtils = require('../utils/crypto');
+const jwtUtils = require('../utils/jwt');
 const config = require('../config');
 const userModels = require('../models/users');
 const {knex} = require('../lib/db');
@@ -15,14 +15,14 @@ const signIn = async ({email, password}) => {
     if (!storedUser) {
         throw new BadRequest('Login failed; Invalid email or password.');
     }
-    const {iv, password: storedPassword, address, phone, ...user} = storedUser;
+    const {iv, password: storedPassword, ...user} = storedUser;
     const arrIv = new Uint8Array(iv.split(','));
-    const decryptedPassword = decryptPassword(storedPassword, config.cipherPasswordKey, arrIv);
+    const decryptedPassword = cryptoUtils.decryptPassword(storedPassword, config.cipherPasswordKey, arrIv);
     if (!(await argon2.verify(decryptedPassword, password))) {
         throw new BadRequest('Login failed; Invalid email or password.');
     }
 
-    const token = createToken(storedUser.id);
+    const token = jwtUtils.createToken(storedUser.id);
 
     return {
         user,
@@ -31,8 +31,8 @@ const signIn = async ({email, password}) => {
 };
 
 const signUp = async ({email, password}) => {
-    const hashedPassword = await hashing(password);
-    const {encrypted: encryptedPassword, iv} = await encryptPassword(hashedPassword, config.cipherPasswordKey);
+    const hashedPassword = await cryptoUtils.hashing(password);
+    const {encrypted: encryptedPassword, iv} = await cryptoUtils.encryptPassword(hashedPassword, config.cipherPasswordKey);
     const {password: storedPassword, iv: storedIv, ...user} = await knex.transaction(trx => {
         return userModels.create(trx, {
             email,
@@ -41,7 +41,7 @@ const signUp = async ({email, password}) => {
         })
     })
 
-    const token = createToken(user.id);
+    const token = jwtUtils.createToken(user.id);
 
     return {
         user,
@@ -50,12 +50,14 @@ const signUp = async ({email, password}) => {
 }
 
 const isAuth = async (token) => {
-    const { id } = verifyToken(token);
+    const { id } = jwtUtils.verifyToken(token);
     const user = await knex.transaction(trx => {
         return userModels.selectById(trx, id);
     });
 
-    return user
+    return {
+        user
+    }
 }
 
 module.exports = {

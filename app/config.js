@@ -8,4 +8,6 @@ module.exports = {
     cipherPasswordKey: process.env.CIPHER_PASSWORD_KEY,
     cipherPasswordName: 'aes-256-cbc',
     passwordVersions: process.env.PASSWORD_VERSIONS || 'v0',
+    tokenKey: process.env.TOKEN_KEY || 'test',
+    tokenExpireTime: process.env.TOKEN_EXPIRE_TIME || '1s'
 }
